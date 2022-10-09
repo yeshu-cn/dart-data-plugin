@@ -129,3 +129,10 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/java,gradle,intellij
+src/.DS_Store
+.DS_Store
+.idea/misc.xml
+.idea/jarRepositories.xml
+.idea/compiler.xml
+.idea/modules.xml
+.idea/modules.xml

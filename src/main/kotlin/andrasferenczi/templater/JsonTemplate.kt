@@ -4,7 +4,7 @@ import andrasferenczi.ext.*
 import com.intellij.codeInsight.template.Template
 import com.intellij.codeInsight.template.TemplateManager
 
-data class MapTemplateParams(
+data class JsonTemplateParams(
     val className: String,
     val variables: List<AliasedVariableTemplateParam>,
     val useNewKeyword: Boolean,
@@ -13,7 +13,7 @@ data class MapTemplateParams(
 )
 
 // The 2 will be generated with the same function
-fun createMapTemplate(
+fun createJsonTemplate(
     templateManager: TemplateManager,
     params: JsonTemplateParams
 ): Template {
@@ -53,7 +53,7 @@ private fun Template.addToMap(params: JsonTemplateParams) {
 
     addTextSegment("Map<String, dynamic>")
     addSpace()
-    addTextSegment(TemplateConstants.TO_MAP_METHOD_NAME)
+    addTextSegment(TemplateConstants.TO_JSON_METHOD_NAME)
     withParentheses {
         if (addKeyMapper) {
             withCurlyBraces {
@@ -73,29 +73,7 @@ private fun Template.addToMap(params: JsonTemplateParams) {
 
         addTextSegment("return")
         addSpace()
-        withCurlyBraces {
-            addNewLine()
-
-            variables.forEach {
-                "'${it.mapKeyString}'".also { keyParam ->
-                    if (addKeyMapper) {
-                        addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
-                        withParentheses {
-                            addTextSegment(keyParam)
-                        }
-                    } else {
-                        addTextSegment(keyParam)
-                    }
-                }
-
-                addTextSegment(":")
-                addSpace()
-                // addTextSegment("this.")
-                addTextSegment(it.variableName)
-                addComma()
-                addNewLine()
-            }
-        }
+        addTextSegment("_$${params.className}ToJson(this)")
         addSemicolon()
     }
 }
@@ -111,7 +89,7 @@ private fun Template.addFromMap(
     addSpace()
     addTextSegment(className)
     addTextSegment(".")
-    addTextSegment(TemplateConstants.FROM_MAP_METHOD_NAME)
+    addTextSegment(TemplateConstants.FROM_JSON_METHOD_NAME)
     withParentheses {
         if (addKeyMapper) {
             addNewLine()
@@ -120,7 +98,7 @@ private fun Template.addFromMap(
         }
         addTextSegment("Map<String, dynamic>")
         addSpace()
-        addTextSegment(TemplateConstants.MAP_VARIABLE_NAME)
+        addTextSegment(TemplateConstants.JSON_VARIABLE_NAME)
 
         if (addKeyMapper) {
             addComma()
@@ -144,43 +122,7 @@ private fun Template.addFromMap(
 
         addTextSegment("return")
         addSpace()
-        if (useNewKeyword) {
-            addTextSegment("new")
-            addSpace()
-        }
-        addTextSegment(className)
-        withParentheses {
-            addNewLine()
-            variables.forEach {
-                addTextSegment(it.publicVariableName)
-                addTextSegment(":")
-                addSpace()
-                addTextSegment(TemplateConstants.MAP_VARIABLE_NAME)
-
-                withBrackets {
-                    "'${it.mapKeyString}'".also { keyParam ->
-                        if (addKeyMapper) {
-                            addTextSegment(TemplateConstants.KEYMAPPER_VARIABLE_NAME)
-                            withParentheses {
-                                addTextSegment(keyParam)
-                            }
-                        } else {
-                            addTextSegment(keyParam)
-                        }
-                    }
-                }
-
-                if(noImplicitCasts) {
-                    addSpace()
-                    addTextSegment("as")
-                    addSpace()
-                    addTextSegment(it.type)
-                }
-
-                addComma()
-                addNewLine()
-            }
-        }
+        addTextSegment("_$${params.className}FromJson(${TemplateConstants.JSON_VARIABLE_NAME})")
         addSemicolon()
     }
 }

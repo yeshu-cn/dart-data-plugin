@@ -15,7 +15,7 @@ import com.intellij.codeInsight.template.TemplateManager
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.jetbrains.lang.dart.psi.DartClassDefinition
 
-class MapAction : BaseAnAction() {
+class JsonAction : BaseAnAction() {
 
     override fun processAction(
         event: AnActionEvent,
@@ -51,7 +51,7 @@ class MapAction : BaseAnAction() {
             val configuration = ConfigurationDataManager.retrieveData(project)
             val dartClassName = dartClass.extractClassName()
 
-            val template = createMapTemplate(
+            val template = createJsonTemplate(
                 templateManager,
                 JsonTemplateParams(
                     className = dartClassName,

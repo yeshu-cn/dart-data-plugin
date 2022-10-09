@@ -37,32 +37,19 @@ fun createToStringTemplate(
 
                 // Cannot use with, since they are closed in different order
                 addTextSegment("{")
-            }
 
-            addSpace()
-            addTextSegment("+")
-            addNewLine()
-
-            variables.forEach { variable ->
-                withSingleQuotes {
-                    addSpace()
+                variables.forEach { variable ->
                     addTextSegment(variable.variableName)
                     addTextSegment(":")
                     addSpace()
                     addTextSegment("\$")
                     addTextSegment(variable.variableName)
                     addComma()
+                    addSpace()
                 }
 
-                addSpace()
-                addTextSegment("+")
-                addNewLine()
-            }
-
-            withSingleQuotes {
                 addTextSegment("}")
             }
-
             addSemicolon()
         }
 
